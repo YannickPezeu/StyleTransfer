@@ -54,6 +54,9 @@ if gpus:
     # Memory growth must be set before GPUs have been initialized
     print(e)
 
+
+
+
 def tensor_to_image(tensor):
   tensor = tensor*255
   tensor = np.array(tensor, dtype=np.uint8)
@@ -61,8 +64,6 @@ def tensor_to_image(tensor):
     assert tensor.shape[0] == 1
     tensor = tensor[0]
   return PIL.Image.fromarray(tensor)
-# content_path = tf.keras.utils.get_file('YellowLabradorLooking_new.jpg', 'https://storage.googleapis.com/download.tensorflow.org/example_images/YellowLabradorLooking_new.jpg')
-# style_path = tf.keras.utils.get_file('kandinsky5.jpg','https://storage.googleapis.com/download.tensorflow.org/example_images/Vassily_Kandinsky%2C_1913_-_Composition_7.jpg')
 
 # VISUALIZE
 
@@ -103,27 +104,7 @@ imshow(content_image, 'content Image')
 plt.subplot(1, 2, 2)
 imshow(style_image, 'Style Image')
 
-## FAST STYLE TRANSFER
 
-# import tensorflow_hub as hub
-# hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
-# stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
-# tensor_to_image(stylized_image)
-#
-# imshow(stylized_image, 'stylized_image')
-# plt.show()
-
-## REAL THING
-
-# # Load a VGG19 and test run it on our image to ensure it's used correctly:
-# x = tf.keras.applications.vgg19.preprocess_input(content_image*255)
-# x = tf.image.resize(x, (224, 224))
-#
-# # Now load a VGG19 without the classification head, and list the layer names
-# vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
-
-
-# Choose intermediate layers from the network to represent the style and content of the image:
 content_layers = ['block5_conv2']
 style_layers = ['block1_conv1',
                 'block2_conv1',
@@ -255,38 +236,14 @@ def train_step_backup(image):
 
 
 
-# train_step(image)
-# train_step(image)
-# train_step(image)
-# tensor_to_image(image)
+
 
 import time
 start = time.time()
 
 epochs = EPOCHS
 steps_per_epoch = STEPS_PER_EPOCHS
-#
-# print(image)
-# image_ = tf.cast(tf.squeeze(image)*255, tf.uint8)
-# # tf.keras.utils.save_img(style_path[:-4]+str(0)+".jpeg", image_)
-# print(image_)
-# step = 0
-# for n in range(epochs):
-#   for m in range(steps_per_epoch):
-#     step += 1
-#     train_step(image)
-#     print(".", end='', flush=True)
-#   display.clear_output(wait=True)
-#   display.display(tensor_to_image(image))
-#   print("Train step: {}".format(step))
-#   image_int = tf.cast(tf.squeeze(image)*255, tf.uint8)
-#   # image_encoded = tf.io.encode_jpeg(image_int,name=style_path[:-4]+str(n)+".jpeg")
-#   tf.keras.utils.save_img(style_path[:-4]+str(n)+".jpeg", image_int)
-# end = time.time()
-# print("Total time: {:.1f}".format(end-start))
-#
-# imshow(image)
-# plt.show()
+
 
 ####### TOTAL VARIATION LOSS
 
@@ -298,35 +255,7 @@ def high_pass_x_y(image):
 
 x_deltas, y_deltas = high_pass_x_y(content_image)
 
-# plt.figure(figsize=(14, 10))
-# plt.subplot(2, 2, 1)
-# imshow(clip_0_1(2*y_deltas+0.5), "Horizontal Deltas: Original")
-#
-# plt.subplot(2, 2, 2)
-# imshow(clip_0_1(2*x_deltas+0.5), "Vertical Deltas: Original")
-#
-# x_deltas, y_deltas = high_pass_x_y(image)
-#
-# plt.subplot(2, 2, 3)
-# imshow(clip_0_1(2*y_deltas+0.5), "Horizontal Deltas: Styled")
-#
-# plt.subplot(2, 2, 4)
-# imshow(clip_0_1(2*x_deltas+0.5), "Vertical Deltas: Styled")
-# plt.show()
-#
-#
-# ### SOBEL EDGE DETECTOR
-#
-# plt.figure(figsize=(14, 10))
-#
-# sobel = tf.image.sobel_edges(content_image)
-# plt.subplot(1, 3, 1)
-# imshow(clip_0_1(sobel[..., 0]/4+0.5), "Horizontal Sobel-edges")
-# plt.subplot(1, 3, 2)
-# imshow(clip_0_1(sobel[..., 1]/4+0.5), "Vertical Sobel-edges")
-# plt.subplot(1, 3, 3)
-# imshow(clip_0_1((sobel[..., 1]/4+0.5)/2+clip_0_1(sobel[..., 0]/4+0.5)/2), "Vertical Sobel-edges")
-# plt.show()
+
 
 
 
@@ -351,21 +280,13 @@ def train_step(image):
 
 
 
-# image_ = tf.cast(tf.squeeze(image)*255, tf.uint8)
 
-# tf.keras.utils.save_img(style_path[:-4]+str(0)+".jpeg", image_)
-# print(image_)
 step = 0
 
 image_int = tf.cast(tf.squeeze(image)*255, tf.uint8)
 content_path_base = os.path.basename(content_path)
 tf.keras.utils.save_img(output_style_path[:-4]+str(0)+"_"+content_path_base+".jpeg", image_int)
-# for k in range(20):
-#     step += 1
-#     train_step(image)
-#     image_int = tf.cast(tf.squeeze(image)*255, tf.uint8)
-#     content_path_base = os.path.basename(content_path)
-#     tf.keras.utils.save_img(output_style_path[:-4]+str(k)+"_"+content_path_base+"init"+".jpeg", image_int)
+
 
 steps_per_epoch = 0
 for n in range(epochs):
